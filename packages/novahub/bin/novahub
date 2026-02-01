@@ -1,11 +1,11 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S bun
 
-const childProcess = require("child_process")
-const fs = require("fs")
-const path = require("path")
-const os = require("os")
+import childProcess from "child_process"
+import fs from "fs"
+import path from "path"
+import os from "os"
 
-function run(target) {
+function run(target: string) {
   const result = childProcess.spawnSync(target, process.argv.slice(2), {
     stdio: "inherit",
   })
@@ -22,15 +22,15 @@ if (envPath) {
   run(envPath)
 }
 
-const scriptPath = fs.realpathSync(__filename)
+const scriptPath = fs.realpathSync(import.meta.filename!)
 const scriptDir = path.dirname(scriptPath)
 
-const platformMap = {
+const platformMap: Record<string, string> = {
   darwin: "darwin",
   linux: "linux",
   win32: "windows",
 }
-const archMap = {
+const archMap: Record<string, string> = {
   x64: "x64",
   arm64: "arm64",
   arm: "arm",
@@ -47,7 +47,7 @@ if (!arch) {
 const base = "novahub-" + platform + "-" + arch
 const binary = platform === "windows" ? "novahub.exe" : "novahub"
 
-function findBinary(startDir) {
+function findBinary(startDir: string): string | undefined {
   let current = startDir
   for (;;) {
     const modules = path.join(current, "node_modules")
@@ -63,9 +63,15 @@ function findBinary(startDir) {
         }
       }
     }
+    // Also check dist directory (for development)
+    const distDir = path.join(current, "dist", base, "bin", binary)
+    if (fs.existsSync(distDir)) {
+      return distDir
+    }
+    
     const parent = path.dirname(current)
     if (parent === current) {
-      return
+      return undefined
     }
     current = parent
   }
