@@ -10,6 +10,7 @@ import { TodoWriteTool, TodoReadTool } from "./todo"
 import { WebFetchTool } from "./webfetch"
 import { WriteTool } from "./write"
 import { InvalidTool } from "./invalid"
+import { RespondTool } from "./respond"
 import { SkillTool } from "./skill"
 import type { Agent } from "../agent/agent"
 import { Tool } from "./tool"
@@ -100,6 +101,7 @@ export namespace ToolRegistry {
 
     return [
       InvalidTool,
+      RespondTool,
       ...(["app", "cli", "desktop"].includes(Flag.NOVAHUB_CLIENT) ? [QuestionTool] : []),
       BashTool,
       ReadTool,
