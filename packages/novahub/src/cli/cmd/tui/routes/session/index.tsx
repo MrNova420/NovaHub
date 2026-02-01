@@ -1338,15 +1338,35 @@ function ReasoningPart(props: { last: boolean; part: ReasoningPart; message: Ass
 function TextPart(props: { last: boolean; part: TextPart; message: AssistantMessage }) {
   const ctx = use()
   const { theme, syntax } = useTheme()
+  
+  // Detect and clean up JSON-like tool call responses
+  const cleanedText = createMemo(() => {
+    const text = props.part.text.trim()
+    
+    // Check if it looks like a JSON tool call
+    const jsonMatch = text.match(/^\s*\{[\s\S]*"name"\s*:\s*"(greet|greeting|hello|respond)"[\s\S]*"message"\s*:\s*"([^"]+)"[\s\S]*\}\s*$/i)
+    if (jsonMatch) {
+      return jsonMatch[2] // Return just the message
+    }
+    
+    // Check for simpler format: {name: greet, arguments: {message: "Hello"}}
+    const simpleMatch = text.match(/\{\s*name\s*:\s*(greet|greeting|hello|respond)[,\s]+arguments\s*:\s*\{[^}]*message\s*:\s*"?([^"}\n]+)"?/i)
+    if (simpleMatch) {
+      return simpleMatch[2].replace(/["']$/, '') // Return message, strip trailing quote
+    }
+    
+    return text
+  })
+  
   return (
-    <Show when={props.part.text.trim()}>
+    <Show when={cleanedText()}>
       <box id={"text-" + props.part.id} paddingLeft={3} marginTop={1} flexShrink={0}>
         <Switch>
           <Match when={Flag.NOVAHUB_EXPERIMENTAL_MARKDOWN}>
             <markdown
               syntaxStyle={syntax()}
               streaming={true}
-              content={props.part.text.trim()}
+              content={cleanedText()}
               conceal={ctx.conceal()}
             />
           </Match>
@@ -1356,7 +1376,7 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
               drawUnstyledText={false}
               streaming={true}
               syntaxStyle={syntax()}
-              content={props.part.text.trim()}
+              content={cleanedText()}
               conceal={ctx.conceal()}
               fg={theme.text}
             />
