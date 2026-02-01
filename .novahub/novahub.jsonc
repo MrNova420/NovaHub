@@ -1,22 +1,61 @@
 {
-  "$schema": "https://novahub.ai/config.json",
-  // "plugin": ["novahub-openai-codex-auth"],
-  // "enterprise": {
-  //   "url": "https://enterprise.dev.novahub.ai",
-  // },
+  "$schema": "https://novahub.dev/config.json",
+  
+  "model": "ollama/qwen2.5-coder:3b",
+  
   "provider": {
-    "novahub": {
-      "options": {},
-    },
+    "ollama": {
+      "name": "Ollama (Local AI)",
+      "api": "http://localhost:11434/v1",
+      "npm": "@ai-sdk/openai-compatible",
+      "models": {
+        "qwen2.5-coder:3b": {
+          "name": "Qwen 2.5 Coder 3B (Bundled)",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          },
+          "attachment": true,
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "bundled": true
+        },
+        "qwen2.5-coder:7b": {
+          "name": "Qwen 2.5 Coder 7B ⭐ Recommended Upgrade",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          },
+          "attachment": true,
+          "reasoning": false,
+          "temperature": true,
+          "tool_call": true,
+          "downloadSize": "4.7GB",
+          "recommended": true
+        }
+      }
+    }
   },
-  "mcp": {
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-    },
-  },
-  "tools": {
-    "github-triage": false,
-    "github-pr-search": false,
-  },
+  
+  "theme": "novahub",
+  
+  "instructions": [
+    "You are NovaHub AI by WeNova Interactive",
+    "Help developers write better code",
+    "Be direct and concise",
+    "Provide working code examples"
+  ],
+  
+  "plugin": [],
+  "mcp": {},
+  "tools": {}
 }
