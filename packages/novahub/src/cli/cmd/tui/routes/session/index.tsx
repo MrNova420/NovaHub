@@ -1448,6 +1448,9 @@ function ToolPart(props: { last: boolean; part: ToolPart; message: AssistantMess
         <Match when={props.part.tool === "question"}>
           <Question {...toolprops} />
         </Match>
+        <Match when={props.part.tool === "respond"}>
+          <RespondTool {...toolprops} />
+        </Match>
         <Match when={props.part.tool === "skill"}>
           <Skill {...toolprops} />
         </Match>
@@ -1467,6 +1470,16 @@ type ToolProps<T extends Tool.Info> = {
   output?: string
   part: ToolPart
 }
+function RespondTool(props: ToolProps<any>) {
+  return (
+    <Show when={props.output}>
+      <box paddingLeft={3} marginTop={1}>
+        <text>{props.output}</text>
+      </box>
+    </Show>
+  )
+}
+
 function GenericTool(props: ToolProps<any>) {
   return (
     <InlineTool icon="⚙" pending="Writing command..." complete={true} part={props.part}>
