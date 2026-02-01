@@ -14,12 +14,34 @@ import { useKeyboard } from "@opentui/solid"
 import { Clipboard } from "@tui/util/clipboard"
 import { useToast } from "../ui/toast"
 
+// AI Provider Priority - Only show actual AI providers, not random services
 const PROVIDER_PRIORITY: Record<string, number> = {
-  novahub: 0,
+  // Local AI (No API keys needed!)
+  ollama: 0,
+  
+  // Popular Cloud AI Providers
   anthropic: 1,
-  "github-copilot": 2,
-  openai: 3,
-  google: 4,
+  openai: 2,
+  google: 3,
+  "github-copilot": 4,
+  
+  // Other AI Providers
+  openrouter: 10,
+  groq: 11,
+  deepseek: 12,
+  mistral: 13,
+  perplexity: 14,
+  xai: 15,
+  cohere: 16,
+  
+  // Cloud AI Platforms
+  "amazon-bedrock": 20,
+  "google-vertex": 21,
+  azure: 22,
+  
+  // Development/Testing
+  novahub: 30,
+  vercel: 31,
 }
 
 export function createDialogProviderOptions() {
@@ -30,19 +52,39 @@ export function createDialogProviderOptions() {
   const options = createMemo(() => {
     return pipe(
       sync.data.provider_next.all,
-      sortBy((x) => PROVIDER_PRIORITY[x.id] ?? 99),
+      // Filter to only show actual AI providers (not random services)
+      (providers) => providers.filter((p) => {
+        // Only show providers that are in our priority list (real AI providers)
+        return p.id in PROVIDER_PRIORITY
+      }),
+      sortBy((x) => PROVIDER_PRIORITY[x.id] ?? 999),
       map((provider) => {
         const isConnected = connected().has(provider.id)
+        
+        // Categorize providers
+        const priority = PROVIDER_PRIORITY[provider.id] ?? 999
+        let category = "Other"
+        if (priority === 0) category = "Local AI (No API Key)"
+        else if (priority >= 1 && priority <= 9) category = "Popular Providers"
+        else if (priority >= 10 && priority <= 19) category = "Other AI Providers"
+        else if (priority >= 20 && priority <= 29) category = "Cloud Platforms"
+        else if (priority >= 30) category = "Development"
+        
         return {
           title: provider.name,
           value: provider.id,
           description: {
-            novahub: "(Recommended)",
-            anthropic: "(Claude Max or API key)",
-            openai: "(ChatGPT Plus/Pro or API key)",
+            ollama: "🟢 Local AI - No API key needed!",
+            anthropic: "Claude models (API key required)",
+            openai: "ChatGPT models (API key required)",
+            google: "Gemini models (API key required)",
+            "github-copilot": "GitHub Copilot (GitHub account)",
+            openrouter: "Access 200+ models (API key)",
+            groq: "Fast inference (API key required)",
+            deepseek: "DeepSeek models (API key required)",
           }[provider.id],
-          category: provider.id in PROVIDER_PRIORITY ? "Popular" : "Other",
-          footer: isConnected ? "Connected" : undefined,
+          category,
+          footer: isConnected ? "✓ Connected" : undefined,
           async onSelect() {
             const methods = sync.data.provider_auth[provider.id] ?? [
               {
