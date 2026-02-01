@@ -188,6 +188,33 @@ export namespace LLM {
       },
       async experimental_repairToolCall(failed) {
         const lower = failed.toolCall.toolName.toLowerCase()
+        
+        // Map common fake tool names to "respond" tool
+        const greetingTools = ["greet", "greeting", "greetings", "hello", "respond_text", "reply", "answer", "message"]
+        if (greetingTools.includes(lower)) {
+          l.info("repairing greeting tool call", {
+            tool: failed.toolCall.toolName,
+            repaired: "respond",
+          })
+          
+          // Extract message from arguments
+          let message = "Hello!"
+          try {
+            const args = typeof failed.toolCall.input === 'string' 
+              ? JSON.parse(failed.toolCall.input) 
+              : failed.toolCall.input
+            message = args.message || args.text || args.content || args.greeting || "Hello!"
+          } catch (e) {
+            // Use default message if parsing fails
+          }
+          
+          return {
+            ...failed.toolCall,
+            toolName: "respond",
+            input: JSON.stringify({ message }),
+          }
+        }
+        
         if (lower !== failed.toolCall.toolName && tools[lower]) {
           l.info("repairing tool call", {
             tool: failed.toolCall.toolName,
