@@ -16,13 +16,13 @@ ts-dist
 /result
 refs
 Session.vim
-opencode.json
+novahub.json
 a.out
 target
 .scripts
 .direnv/
 
 # Local dev files
-opencode-dev
+novahub-dev
 logs/
 *.bun-build

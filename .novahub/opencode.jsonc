@@ -1,0 +1,22 @@
+{
+  "$schema": "https://novahub.ai/config.json",
+  // "plugin": ["novahub-openai-codex-auth"],
+  // "enterprise": {
+  //   "url": "https://enterprise.dev.novahub.ai",
+  // },
+  "provider": {
+    "novahub": {
+      "options": {},
+    },
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+    },
+  },
+  "tools": {
+    "github-triage": false,
+    "github-pr-search": false,
+  },
+}

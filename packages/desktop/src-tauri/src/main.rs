@@ -86,5 +86,5 @@ fn main() {
         }
     }
 
-    opencode_lib::run()
+    novahub_lib::run()
 }

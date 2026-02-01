@@ -44,7 +44,7 @@ async function waitForHealth(url: string) {
 
 const appDir = process.cwd()
 const repoDir = path.resolve(appDir, "../..")
-const opencodeDir = path.join(repoDir, "packages", "opencode")
+const novahubDir = path.join(repoDir, "packages", "novahub")
 
 const extraArgs = (() => {
   const args = process.argv.slice(2)
@@ -54,37 +54,37 @@ const extraArgs = (() => {
 
 const [serverPort, webPort] = await Promise.all([freePort(), freePort()])
 
-const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), "opencode-e2e-"))
+const sandbox = await fs.mkdtemp(path.join(os.tmpdir(), "novahub-e2e-"))
 
 const serverEnv = {
   ...process.env,
-  OPENCODE_DISABLE_SHARE: process.env.OPENCODE_DISABLE_SHARE ?? "true",
-  OPENCODE_DISABLE_LSP_DOWNLOAD: "true",
-  OPENCODE_DISABLE_DEFAULT_PLUGINS: "true",
-  OPENCODE_EXPERIMENTAL_DISABLE_FILEWATCHER: "true",
-  OPENCODE_TEST_HOME: path.join(sandbox, "home"),
+  NOVAHUB_DISABLE_SHARE: process.env.NOVAHUB_DISABLE_SHARE ?? "true",
+  NOVAHUB_DISABLE_LSP_DOWNLOAD: "true",
+  NOVAHUB_DISABLE_DEFAULT_PLUGINS: "true",
+  NOVAHUB_EXPERIMENTAL_DISABLE_FILEWATCHER: "true",
+  NOVAHUB_TEST_HOME: path.join(sandbox, "home"),
   XDG_DATA_HOME: path.join(sandbox, "share"),
   XDG_CACHE_HOME: path.join(sandbox, "cache"),
   XDG_CONFIG_HOME: path.join(sandbox, "config"),
   XDG_STATE_HOME: path.join(sandbox, "state"),
-  OPENCODE_E2E_PROJECT_DIR: repoDir,
-  OPENCODE_E2E_SESSION_TITLE: "E2E Session",
-  OPENCODE_E2E_MESSAGE: "Seeded for UI e2e",
-  OPENCODE_E2E_MODEL: "opencode/gpt-5-nano",
-  OPENCODE_CLIENT: "app",
+  NOVAHUB_E2E_PROJECT_DIR: repoDir,
+  NOVAHUB_E2E_SESSION_TITLE: "E2E Session",
+  NOVAHUB_E2E_MESSAGE: "Seeded for UI e2e",
+  NOVAHUB_E2E_MODEL: "novahub/gpt-5-nano",
+  NOVAHUB_CLIENT: "app",
 } satisfies Record<string, string>
 
 const runnerEnv = {
   ...serverEnv,
   PLAYWRIGHT_SERVER_HOST: "127.0.0.1",
   PLAYWRIGHT_SERVER_PORT: String(serverPort),
-  VITE_OPENCODE_SERVER_HOST: "127.0.0.1",
-  VITE_OPENCODE_SERVER_PORT: String(serverPort),
+  VITE_NOVAHUB_SERVER_HOST: "127.0.0.1",
+  VITE_NOVAHUB_SERVER_PORT: String(serverPort),
   PLAYWRIGHT_PORT: String(webPort),
 } satisfies Record<string, string>
 
 const seed = Bun.spawn(["bun", "script/seed-e2e.ts"], {
-  cwd: opencodeDir,
+  cwd: novahubDir,
   env: serverEnv,
   stdout: "inherit",
   stderr: "inherit",
@@ -97,20 +97,20 @@ if (seedExit !== 0) {
 
 Object.assign(process.env, serverEnv)
 process.env.AGENT = "1"
-process.env.OPENCODE = "1"
+process.env.NOVAHUB = "1"
 
-const log = await import("../../opencode/src/util/log")
-const install = await import("../../opencode/src/installation")
+const log = await import("../../novahub/src/util/log")
+const install = await import("../../novahub/src/installation")
 await log.Log.init({
   print: true,
   dev: install.Installation.isLocal(),
   level: "WARN",
 })
 
-const servermod = await import("../../opencode/src/server/server")
-const inst = await import("../../opencode/src/project/instance")
+const servermod = await import("../../novahub/src/server/server")
+const inst = await import("../../novahub/src/project/instance")
 const server = servermod.Server.listen({ port: serverPort, hostname: "127.0.0.1" })
-console.log(`opencode server listening on http://127.0.0.1:${serverPort}`)
+console.log(`novahub server listening on http://127.0.0.1:${serverPort}`)
 
 const result = await (async () => {
   try {

@@ -36,7 +36,7 @@ export default function Black() {
 
   return (
     <>
-      <Title>opencode</Title>
+      <Title>novahub</Title>
       <section data-slot="cta">
         <Switch>
           <Match when={!selected()}>

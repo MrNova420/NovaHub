@@ -1,0 +1,21 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ *  🌟 NovaHub - Your Central Development Hub
+ * ═══════════════════════════════════════════════════════════════
+ * 
+ * Copyright (c) 2026 WeNova Interactive
+ * Created by: MrNova420
+ * GitHub: https://github.com/MrNova420/NovaHub
+ * 
+ * This project is based on OpenCode (MIT License)
+ * Original: https://github.com/anomalyco/opencode
+ * 
+ * Licensed under the MIT License
+ * See LICENSE file in the project root for full license information.
+ * 
+ * @package @novahub/[package-name]
+ * @version 1.0.0-alpha
+ * @author MrNova420
+ * 
+ * ═══════════════════════════════════════════════════════════════
+ */

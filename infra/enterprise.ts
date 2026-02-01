@@ -8,10 +8,10 @@ const teams = new sst.cloudflare.x.SolidStart("Teams", {
   path: "packages/enterprise",
   buildCommand: "bun run build:cloudflare",
   environment: {
-    OPENCODE_STORAGE_ADAPTER: "r2",
-    OPENCODE_STORAGE_ACCOUNT_ID: sst.cloudflare.DEFAULT_ACCOUNT_ID,
-    OPENCODE_STORAGE_ACCESS_KEY_ID: SECRET.R2AccessKey.value,
-    OPENCODE_STORAGE_SECRET_ACCESS_KEY: SECRET.R2SecretKey.value,
-    OPENCODE_STORAGE_BUCKET: storage.name,
+    NOVAHUB_STORAGE_ADAPTER: "r2",
+    NOVAHUB_STORAGE_ACCOUNT_ID: sst.cloudflare.DEFAULT_ACCOUNT_ID,
+    NOVAHUB_STORAGE_ACCESS_KEY_ID: SECRET.R2AccessKey.value,
+    NOVAHUB_STORAGE_SECRET_ACCESS_KEY: SECRET.R2SecretKey.value,
+    NOVAHUB_STORAGE_BUCKET: storage.name,
   },
 })

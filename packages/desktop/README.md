@@ -1,6 +1,6 @@
-# OpenCode Desktop
+# NovaHub Desktop
 
-Native OpenCode desktop app, built with Tauri v2.
+Native NovaHub desktop app, built with Tauri v2.
 
 ## Development
 
