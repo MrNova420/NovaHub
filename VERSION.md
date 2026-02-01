@@ -1,5 +1,38 @@
 # NovaHub Version History
 
+# NovaHub Version History
+
+## Version 0.2.0 (In Progress - 2026-02-01)
+**Focus:** AI Response Improvements & Bundling
+
+### Major Changes:
+- **🎯 CRITICAL FIX**: Eliminated AI mode instruction spam
+  - Removed 69 lines of "READ-ONLY", "MUST NOT", "STRICTLY FORBIDDEN" warnings
+  - Deleted all Plan/Build mode reminders that caused AI to loop
+  - Modified `packages/novahub/src/session/prompt.ts` to skip mode injections
+  - AI now works naturally without constantly repeating mode rules
+  
+- **⚡ Performance**: Default model changed to 3B
+  - Faster responses (3B vs 7B)
+  - Lower memory usage (2GB vs 4.7GB)
+  - 7B available as optional upgrade in config
+  
+- **📦 Bundling**: Work in progress
+  - Created `create-bundles.sh` script
+  - Created `BUNDLE_PREP.sh` for model extraction
+  - Fixed Ollama binary downloads
+  - **BLOCKED**: Model file location issue (see Known Issues)
+
+### Known Issues:
+- Bundling incomplete: Model files reported by Ollama at `/usr/share/ollama/.ollama/models/blobs/` but not accessible
+- Bundle script needs further investigation of Ollama storage mechanism
+- Temporary workaround: Use `install.sh` (fully functional)
+
+### Binary Version:
+- v0.0.0-master-202602010731
+
+---
+
 ## Version 0.0.1 (2026-02-01)
 **Base:** OpenCode 1.1.48
 

@@ -26,3 +26,4 @@ target
 novahub-dev
 logs/
 *.bun-build
+bundles/

@@ -59,6 +59,14 @@ if ! ollama list | grep -q "qwen2.5-coder:3b"; then
 fi
 success "Qwen 3B model ready"
 
+# Check if model was extracted
+if [ ! -f "/tmp/qwen-3b-model.gguf" ]; then
+    echo ""
+    warn "Model not extracted yet. Please run: ./BUNDLE_PREP.sh"
+    exit 1
+fi
+success "Model blob found ($(du -h /tmp/qwen-3b-model.gguf | cut -f1))"
+
 # Build NovaHub binaries
 log "Building NovaHub binaries..."
 cd "$NOVAHUB_DIR/packages/novahub"
@@ -94,17 +102,33 @@ create_bundle() {
     # Download Ollama binary if needed
     if [ ! -f "/tmp/ollama-$ollama_binary" ]; then
         log "Downloading Ollama binary for $platform..."
-        curl -L "https://github.com/ollama/ollama/releases/latest/download/ollama-$ollama_binary" \
-            -o "/tmp/ollama-$ollama_binary"
-        chmod +x "/tmp/ollama-$ollama_binary"
+        # Ollama releases don't have platform-specific binaries with these names
+        # Use the main ollama binary from releases
+        case "$platform-$arch" in
+            linux-x64)
+                curl -fsSL "https://github.com/ollama/ollama/releases/download/v0.5.7/ollama-linux-amd64.tgz" -o "/tmp/ollama.tgz"
+                tar -xzf "/tmp/ollama.tgz" -C "/tmp" && mv "/tmp/bin/ollama" "/tmp/ollama-$ollama_binary"
+                ;;
+            linux-arm64)
+                curl -fsSL "https://github.com/ollama/ollama/releases/download/v0.5.7/ollama-linux-arm64.tgz" -o "/tmp/ollama.tgz"
+                tar -xzf "/tmp/ollama.tgz" -C "/tmp" && mv "/tmp/bin/ollama" "/tmp/ollama-$ollama_binary"
+                ;;
+            darwin-*)
+                curl -fsSL "https://github.com/ollama/ollama/releases/download/v0.5.7/ollama-darwin" -o "/tmp/ollama-$ollama_binary"
+                ;;
+        esac
+        chmod +x "/tmp/ollama-$ollama_binary" 2>/dev/null || true
     fi
-    cp "/tmp/ollama-$ollama_binary" "$bundle_path/bin/ollama"
+    if [ -f "/tmp/ollama-$ollama_binary" ]; then
+        cp "/tmp/ollama-$ollama_binary" "$bundle_path/bin/ollama"
+    else
+        warn "Ollama binary download failed, skipping..."
+    fi
     
-    # Copy Qwen 3B model
+    # Copy Qwen 3B model (already extracted to /tmp)
     log "Copying Qwen 3B model..."
-    local model_path=$(find ~/.ollama/models -name "sha256-*" | head -1)
-    if [ -n "$model_path" ]; then
-        cp "$model_path" "$bundle_path/models/qwen2.5-coder-3b.gguf"
+    if [ -f "/tmp/qwen-3b-model.gguf" ]; then
+        cp "/tmp/qwen-3b-model.gguf" "$bundle_path/models/qwen2.5-coder-3b.gguf"
     else
         warn "Model file not found, bundle may be incomplete"
     fi

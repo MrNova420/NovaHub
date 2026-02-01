@@ -7,9 +7,9 @@
 
 ---
 
-## Current Version: 0.0.1
+## Current Version: 0.2.0 (In Progress)
 
-### Status: ✅ Fully Operational
+### Status: 🔧 AI Improvements & Bundling
 
 **Last Updated:** 2026-02-01
 
@@ -40,13 +40,34 @@
 - [x] Verified command works from any directory
 - [x] All branding updated in help text
 
-### 🚧 Phase 4: Professional Polish (In Progress)
-- [ ] Create professional install script
-- [ ] Improve ASCII logo design
-- [ ] Create comprehensive documentation
-- [ ] Add usage guides
-- [ ] Create tutorials
-- [ ] Add examples
+### ✅ Phase 4: Local AI Integration (Complete - 2026-02-01)
+- [x] Integrated Ollama for local AI
+- [x] Updated install.sh to bundle Ollama
+- [x] Set qwen2.5-coder as default model
+- [x] Cleaned provider list (removed non-AI entries)
+- [x] Fixed config validation issues
+- [x] Created comprehensive Ollama guides
+
+### ✅ Phase 5: AI Response Fixes (Complete - 2026-02-01)
+- [x] **CRITICAL FIX**: Removed mode instruction spam
+  - Eliminated 69-line "READ-ONLY" warnings causing AI loops
+  - Removed all Plan/Build mode reminders from prompt.ts
+  - AI now responds naturally without mode confusion
+- [x] Changed default model from 7B to 3B (faster, smaller)
+- [x] Rebuilt all binaries (v0.0.0-master-202602010731)
+- [x] Updated configs to use 3B as default
+
+### 🔧 Phase 6: Bundling (Work in Progress)
+- [x] Created bundle script framework
+- [x] Fixed Ollama binary download URLs
+- [ ] **BLOCKED**: Model file location not accessible
+  - Ollama reports files at `/usr/share/ollama/.ollama/models/blobs/`
+  - Files don't exist at reported location
+  - Need to investigate actual storage mechanism
+- [ ] Complete bundle testing
+- [ ] Create GitHub releases
+
+**Workaround:** Installer approach (`install.sh`) works perfectly and is recommended for v0.1.0 release.
 
 ### 📋 Phase 5: Customization (Planned)
 - [ ] Analyze codebase structure
