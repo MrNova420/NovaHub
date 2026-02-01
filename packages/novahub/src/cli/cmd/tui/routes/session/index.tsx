@@ -1351,8 +1351,10 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
     //   }
     // }
     const multilineMatch = text.match(/\{\s*name\s*:\s*(\w+)\s*,\s*arguments\s*:\s*\{[^}]*message\s*:\s*([^}\n]+)/i)
-    if (multilineMatch && ['greet', 'greeting', 'hello', 'respond'].includes(multilineMatch[1].toLowerCase())) {
-      return multilineMatch[2].trim()
+    if (multilineMatch && ['greet', 'greeting', 'hello', 'respond', 'reply', 'answer'].includes(multilineMatch[1].toLowerCase())) {
+      const message = multilineMatch[2].trim()
+      console.log('[NovaHub] Detected JSON greeting, extracted:', message)
+      return message
     }
     
     return text
