@@ -132,16 +132,20 @@ setup_ollama_models() {
         sleep 3
     fi
     
-    # Pull default model
-    log_step "Downloading Qwen2.5 Coder 7B (default model)..."
-    log_info "Size: ~4.7GB - Great for coding tasks!"
+    # Pull default model (3B - smaller and faster)
+    log_step "Downloading Qwen2.5 Coder 3B (default model)..."
+    log_info "Size: ~1.9GB - Fast and efficient for coding!"
     
-    if ollama list | grep -q "qwen2.5-coder:7b"; then
+    if ollama list | grep -q "qwen2.5-coder:3b"; then
         log_success "Model already downloaded"
     else
-        ollama pull qwen2.5-coder:7b
+        ollama pull qwen2.5-coder:3b
         log_success "Model downloaded successfully"
     fi
+    
+    # Optionally mention the 7B model
+    log_info "For better performance, you can install the 7B model later:"
+    log_info "  ollama pull qwen2.5-coder:7b"
 }
 
 # Install Bun
@@ -622,11 +626,13 @@ print_success() {
 main() {
     print_banner
     
-    log_info "Starting NovaHub installation..."
+    log_info "Starting NovaHub installation with Local AI support..."
     echo ""
     
     check_requirements
     install_bun
+    install_ollama
+    setup_ollama_models
     
     # Clone repo - skip rebuild if user says no
     if ! clone_repo; then
