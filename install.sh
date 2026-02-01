@@ -271,18 +271,24 @@ setup_path() {
 
 # Create config directory and default config
 setup_config() {
-    if [ -d "$CONFIG_DIR" ]; then
-        log_info "Config directory already exists"
-        return
+    log_step "Setting up configuration..."
+    
+    # Create config directory if it doesn't exist
+    if [ ! -d "$CONFIG_DIR" ]; then
+        mkdir -p "$CONFIG_DIR"
+        log_info "Created config directory"
     fi
     
-    log_step "Creating config directory with Ollama defaults..."
-    mkdir -p "$CONFIG_DIR"
-    
-    # Copy default config from repo
+    # Copy/update config file if source exists and (target doesn't exist OR is outdated)
     if [ -f "$INSTALL_DIR/.novahub/novahub.jsonc" ]; then
-        cp "$INSTALL_DIR/.novahub/novahub.jsonc" "$CONFIG_DIR/"
-        log_success "Default config created with Ollama support"
+        if [ ! -f "$CONFIG_DIR/novahub.jsonc" ]; then
+            cp "$INSTALL_DIR/.novahub/novahub.jsonc" "$CONFIG_DIR/"
+            log_success "Created default config with Ollama support"
+        else
+            log_info "Config file already exists at $CONFIG_DIR/novahub.jsonc"
+        fi
+    else
+        log_warning "Default config not found in repo"
     fi
 }
 
@@ -473,7 +479,7 @@ clone_repo() {
             rm -rf "$INSTALL_DIR"
         else
             log_info "Using existing installation"
-            return
+            return 1
         fi
     fi
     
@@ -621,7 +627,19 @@ main() {
     
     check_requirements
     install_bun
-    clone_repo
+    
+    # Clone repo - skip rebuild if user says no
+    if ! clone_repo; then
+        log_info "Skipping rebuild, updating command and config only..."
+        setup_command
+        setup_path
+        setup_config
+        echo ""
+        print_success
+        return 0
+    fi
+    
+    # Full installation
     install_dependencies
     build_novahub
     setup_command
