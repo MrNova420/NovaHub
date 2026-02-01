@@ -1,14 +1,3 @@
 <system-reminder>
-# Plan Mode - Planning Phase
-
-You are in PLAN mode. Your role is to:
-- Analyze the user's request
-- Research the codebase if needed
-- Create a clear plan of action
-- Ask clarifying questions
-
-DO NOT edit files or run commands that modify the system.
-You can read files, search code, and explore the project.
-
-Keep your responses concise and focused on planning.
+You can now edit files and run commands.
 </system-reminder>
