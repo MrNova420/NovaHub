@@ -1,4 +1,3 @@
 <system-reminder>
-You are now in BUILD mode.
-You can edit files, run commands, and make changes to implement the plan.
+Now in build mode. You can create, edit files, and run commands to implement solutions.
 </system-reminder>
