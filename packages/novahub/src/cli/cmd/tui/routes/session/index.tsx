@@ -1343,16 +1343,16 @@ function TextPart(props: { last: boolean; part: TextPart; message: AssistantMess
   const cleanedText = createMemo(() => {
     const text = props.part.text.trim()
     
-    // Check if it looks like a JSON tool call
-    const jsonMatch = text.match(/^\s*\{[\s\S]*"name"\s*:\s*"(greet|greeting|hello|respond)"[\s\S]*"message"\s*:\s*"([^"]+)"[\s\S]*\}\s*$/i)
-    if (jsonMatch) {
-      return jsonMatch[2] // Return just the message
-    }
-    
-    // Check for simpler format: {name: greet, arguments: {message: "Hello"}}
-    const simpleMatch = text.match(/\{\s*name\s*:\s*(greet|greeting|hello|respond)[,\s]+arguments\s*:\s*\{[^}]*message\s*:\s*"?([^"}\n]+)"?/i)
-    if (simpleMatch) {
-      return simpleMatch[2].replace(/["']$/, '') // Return message, strip trailing quote
+    // Check for multiline format (the actual Qwen output):
+    // {
+    //   name: greet,
+    //   arguments: {
+    //     message: Hello Qwen
+    //   }
+    // }
+    const multilineMatch = text.match(/\{\s*name\s*:\s*(\w+)\s*,\s*arguments\s*:\s*\{[^}]*message\s*:\s*([^}\n]+)/i)
+    if (multilineMatch && ['greet', 'greeting', 'hello', 'respond'].includes(multilineMatch[1].toLowerCase())) {
+      return multilineMatch[2].trim()
     }
     
     return text
